@@ -170,6 +170,87 @@ export const boosts: Boost[] = [
   }
 ];
 
+export type Train = {
+  id: number;
+  name: string;
+  task: string;
+  taskNumber: number;
+  type: string;
+};
+
+export const trains: Train[] = [
+  {
+    id: 1,
+    name: 'Training 1',
+    task: 'Task 1',
+    taskNumber: 1,
+    type: 'Type 1'
+  },
+  {
+    id: 2,
+    name: 'Training 2',
+    task: 'Task 2',
+    taskNumber: 2,
+    type: 'Type 2'
+  },
+  {
+    id: 3,
+    name: 'Training 3',
+    task: 'Task 3',
+    taskNumber: 3,
+    type: 'Type 3'
+  },
+  {
+    id: 4,
+    name: 'Training 4',
+    task: 'Task 4',
+    taskNumber: 4,
+    type: 'Type 4'
+  },
+  {
+    id: 5,
+    name: 'Training 5',
+    task: 'Task 5',
+    taskNumber: 5,
+    type: 'Type 5'
+  },
+  {
+    id: 6,
+    name: 'Training 6',
+    task: 'Task 6',
+    taskNumber: 6,
+    type: 'Type 6'
+  },
+  {
+    id: 7,
+    name: 'Training 7',
+    task: 'Task 7',
+    taskNumber: 7,
+    type: 'Type 7'
+  },
+  {
+    id: 8,
+    name: 'Training 8',
+    task: 'Task 8',
+    taskNumber: 8,
+    type: 'Type 8'
+  },
+  {
+    id: 9,
+    name: 'Training 9',
+    task: 'Task 9',
+    taskNumber: 9,
+    type: 'Type 9'
+  },
+  {
+    id: 10,
+    name: 'Boost 10',
+    task: 'Task 10',
+    taskNumber: 10,
+    type: 'Type 10'
+  }
+];
+
 export const navItems: NavItem[] = [
   {
     title: 'Home',

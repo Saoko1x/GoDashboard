@@ -4,7 +4,7 @@ import { BoostTable } from '@/components/tables/boost-tables/boost';
 
 const breadcrumbItems = [
   { title: 'Dashboard', link: '/dashboard' },
-  { title: 'Boost', link: '/dashboard/system' }
+  { title: 'Boost', link: '/dashboard/boost' }
 ];
 
 export default function page() {

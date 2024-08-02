@@ -203,26 +203,13 @@ export const ScreenForm: React.FC<ScreenFormProps> = ({
               name="description"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Description</FormLabel>
+                  <FormLabel>Task number</FormLabel>
                   <FormControl>
                     <Input
                       disabled={loading}
-                      placeholder="Screen description"
+                      placeholder="Number of task"
                       {...field}
                     />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="price"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Price</FormLabel>
-                  <FormControl>
-                    <Input type="number" disabled={loading} {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -233,7 +220,7 @@ export const ScreenForm: React.FC<ScreenFormProps> = ({
               name="category"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Category</FormLabel>
+                  <FormLabel>Type</FormLabel>
                   <Select
                     disabled={loading}
                     onValueChange={field.onChange}
