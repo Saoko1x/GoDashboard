@@ -29,6 +29,7 @@ import { cn } from '@/lib/utils';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { AlertTriangleIcon, Trash, Trash2Icon } from 'lucide-react';
 import { useParams, useRouter } from 'next/navigation';
+import React from 'react';
 import { useState } from 'react';
 import { SubmitHandler, useFieldArray, useForm } from 'react-hook-form';
 

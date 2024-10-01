@@ -26,6 +26,7 @@ import {
 } from '@/components/ui/select';
 import { useToast } from '../ui/use-toast';
 import FileUpload from '../file-upload';
+import React from 'react';
 const ImgSchema = z.object({
   fileName: z.string(),
   name: z.string(),

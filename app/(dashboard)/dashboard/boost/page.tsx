@@ -1,6 +1,7 @@
 import { Breadcrumbs } from '@/components/breadcrumbs';
 import HeadBoost from '@/components/boost/head-boost';
 import CardBoost from '@/components/boost/card-boost';
+import React from 'react';
 const breadcrumbItems = [
   { title: 'Dashboard', link: '/dashboard' },
   { title: 'Boost', link: '/dashboard/boost' }

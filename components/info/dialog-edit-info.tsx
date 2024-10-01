@@ -14,6 +14,7 @@ import { Button } from '../ui/button';
 import { useState } from 'react';
 import { PencilIcon } from 'lucide-react';
 import { useSession } from 'next-auth/react';
+import React from 'react';
 
 export default function Component({
   title,
@@ -63,9 +64,7 @@ export default function Component({
           title: titles,
           date: dates,
           imageUrl: imageUrls,
-          eventUrl: eventUrls,
-          categoryId: category,
-          companyId: parsedUserId
+          eventUrl: eventUrls
         },
         {
           onSuccess: () => {

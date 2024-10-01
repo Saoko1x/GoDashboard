@@ -8,7 +8,7 @@ export const onboardingRouter = router({
   create: publicProcedure
     .input(
       z.object({
-        userId: z.number(),
+        profileId: z.number(),
         questions: z.array(
           z.object({
             question: z.string(),
@@ -20,7 +20,7 @@ export const onboardingRouter = router({
     .mutation(async ({ input }) => {
       return prisma.onboarding.create({
         data: {
-          userId: input.userId,
+          profileId: input.profileId,
           questions: {
             create: input.questions.map((q) => ({
               question: q.question,
@@ -34,11 +34,11 @@ export const onboardingRouter = router({
       });
     }),
 
-  getByUserId: publicProcedure
-    .input(z.object({ userId: z.number() }))
+  getByProfileId: publicProcedure
+    .input(z.object({ profileId: z.number() }))
     .query(async ({ input }) => {
       return prisma.onboarding.findUnique({
-        where: { userId: input.userId },
+        where: { profileId: input.profileId },
         include: { questions: { include: { answers: true } } }
       });
     }),
@@ -46,7 +46,7 @@ export const onboardingRouter = router({
   update: publicProcedure
     .input(
       z.object({
-        userId: z.number(),
+        profileId: z.number(),
         questions: z.array(
           z.object({
             id: z.number().optional(),
@@ -62,11 +62,11 @@ export const onboardingRouter = router({
       })
     )
     .mutation(async ({ input }) => {
-      const { userId, questions } = input;
+      const { profileId, questions } = input;
 
       const onboarding = await prisma.onboarding.upsert({
-        where: { userId },
-        create: { userId },
+        where: { profileId },
+        create: { profileId },
         update: {}
       });
 
@@ -99,16 +99,16 @@ export const onboardingRouter = router({
       }
 
       return prisma.onboarding.findUnique({
-        where: { userId },
+        where: { profileId },
         include: { questions: { include: { answers: true } } }
       });
     }),
 
   delete: publicProcedure
-    .input(z.object({ userId: z.number() }))
+    .input(z.object({ profileId: z.number() }))
     .mutation(async ({ input }) => {
       return prisma.onboarding.delete({
-        where: { userId: input.userId }
+        where: { profileId: input.profileId }
       });
     })
 });

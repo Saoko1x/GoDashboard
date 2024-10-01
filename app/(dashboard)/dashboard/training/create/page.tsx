@@ -1,9 +1,9 @@
 'use client';
 import { Breadcrumbs } from '@/components/breadcrumbs';
-import { ScrollArea } from '@/components/ui/scroll-area';
 import CardTask from '@/components/training/card-task-training';
 import { useSearchParams } from 'next/navigation';
 import HeadCreateTraining from '@/components/training/head-create-training';
+import React from 'react';
 
 export default function Page({ params }: { params: { week: number } }) {
   const breadcrumbItems = [

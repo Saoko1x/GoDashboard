@@ -18,6 +18,7 @@ import {
 } from 'lucide-react';
 import DialogTask from './dialog-boost';
 import { useSession } from 'next-auth/react';
+import React from 'react';
 
 export default function Component() {
   const { data: session } = useSession();

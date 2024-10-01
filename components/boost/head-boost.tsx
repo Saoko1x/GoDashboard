@@ -4,6 +4,7 @@ import { Separator } from '../ui/separator';
 import DialogBoost from './dialog-boost';
 import { Button } from '../ui/button';
 import { Plus } from 'lucide-react';
+import React from 'react';
 
 export default function Component() {
   return (

@@ -3,6 +3,7 @@ import { Breadcrumbs } from '@/components/breadcrumbs';
 import CardTask from '@/components/system/card-task-system';
 import { useSearchParams } from 'next/navigation';
 import HeadCreateSystem from '@/components/system/head-create-system';
+import React from 'react';
 
 export default function Page({ params }: { params: { week: number } }) {
   const breadcrumbItems = [

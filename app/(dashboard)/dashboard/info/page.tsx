@@ -2,6 +2,7 @@ import { Metadata } from 'next';
 import HeadInfo from '@/components/info/head-info';
 import { Breadcrumbs } from '@/components/breadcrumbs';
 import TabsInfo from '@/components/info/tabs-info';
+import React from 'react';
 
 export const metadata: Metadata = {
   title: 'Info and News'

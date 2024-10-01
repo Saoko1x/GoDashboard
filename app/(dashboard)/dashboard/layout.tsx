@@ -1,6 +1,7 @@
 import Header from '@/components/layout/header';
 import Sidebar from '@/components/layout/sidebar';
 import type { Metadata } from 'next';
+import React from 'react';
 
 export const metadata: Metadata = {
   title: 'Go Dashboard',

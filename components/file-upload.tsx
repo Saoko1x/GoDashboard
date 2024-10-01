@@ -7,6 +7,7 @@ import { UploadFileResponse } from 'uploadthing/client';
 import { IMG_MAX_LIMIT } from './forms/screen-form';
 import { Button } from './ui/button';
 import { useToast } from './ui/use-toast';
+import React from 'react';
 
 interface ImageUploadProps {
   onChange?: any;

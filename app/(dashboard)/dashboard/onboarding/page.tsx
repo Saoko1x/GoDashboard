@@ -1,6 +1,7 @@
 import { Breadcrumbs } from '@/components/breadcrumbs';
 import HeadOnboarding from '@/components/onboarding/head-onboarding';
 import FormOnboarding from '@/components/onboarding/form-onboarding';
+import React from 'react';
 
 export default function Page() {
   const breadcrumbItems = [
