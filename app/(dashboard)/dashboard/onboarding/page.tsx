@@ -1,24 +1,19 @@
-import { Metadata } from 'next';
-import HeadInfo from '@/components/info/head-info';
 import { Breadcrumbs } from '@/components/breadcrumbs';
-import TabsInfo from '@/components/info/tabs-info';
-
-export const metadata: Metadata = {
-  title: 'Info and News'
-};
+import HeadOnboarding from '@/components/onboarding/head-onboarding';
+import FormOnboarding from '@/components/onboarding/form-onboarding';
 
 export default function Page() {
   const breadcrumbItems = [
     { title: 'Dashboard', link: '/dashboard' },
-    { title: 'Info & News', link: '/dashboard/info' }
+    { title: 'Onboarding', link: '/dashboard/onboarding' }
   ];
 
   return (
     <>
       <div className="flex-1 space-y-4 p-4 pt-6 md:p-8">
         <Breadcrumbs items={breadcrumbItems} />
-        <HeadInfo />
-        <TabsInfo />
+        <HeadOnboarding />
+        <FormOnboarding />
       </div>
     </>
   );

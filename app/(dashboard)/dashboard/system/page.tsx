@@ -1,17 +1,17 @@
 import { Breadcrumbs } from '@/components/breadcrumbs';
-import { UserClient } from '@/components/tables/system-tables/client';
-import { weeks } from '@/constants/data';
-
+import CardSystem from '@/components/system/card-system';
+import HeadSytem from '@/components/system/head-system';
 const breadcrumbItems = [
   { title: 'Dashboard', link: '/dashboard' },
   { title: 'System', link: '/dashboard/system' }
 ];
-export default function page() {
+export default function Page() {
   return (
     <>
-      <div className="flex-1 space-y-4  p-4 pt-6 md:p-8">
+      <div className="flex-1 space-y-4 p-4 pt-6 md:p-8">
         <Breadcrumbs items={breadcrumbItems} />
-        <UserClient data={weeks} />
+        <HeadSytem />
+        <CardSystem />
       </div>
     </>
   );

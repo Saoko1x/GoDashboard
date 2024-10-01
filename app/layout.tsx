@@ -6,6 +6,7 @@ import NextTopLoader from 'nextjs-toploader';
 import { Inter } from 'next/font/google';
 import './globals.css';
 import { auth } from '@/auth';
+import { TRPCProvider } from '@/components/trpc-provider';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -23,13 +24,15 @@ export default async function RootLayout({
   const session = await auth();
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={`${inter.className} overflow-hidden`}>
-        <NextTopLoader showSpinner={false} />
-        <Providers session={session}>
-          <Toaster />
-          {children}
-        </Providers>
-      </body>
+      <TRPCProvider>
+        <body className={`${inter.className}`}>
+          <NextTopLoader showSpinner={false} />
+          <Providers session={session}>
+            <Toaster />
+            {children}
+          </Providers>
+        </body>
+      </TRPCProvider>
     </html>
   );
 }
