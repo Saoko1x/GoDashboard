@@ -38,14 +38,13 @@ export default function UserAuthForm() {
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get('callbackUrl');
   const [loading, setLoading] = useState(false);
-  const [isSignup, setIsSignup] = useState(false); // Estado para cambiar entre login y signup
+  const [isSignup, setIsSignup] = useState(false);
 
   const defaultValues = {
-    email: 'jemg2510@gmail.com',
-    password: '123456'
+    email: '',
+    password: ''
   };
 
-  // Cambia el esquema de validación según el estado
   const form = useForm<LoginFormValue | SignupFormValue>({
     resolver: zodResolver(isSignup ? signupSchema : loginSchema),
     defaultValues
@@ -58,14 +57,14 @@ export default function UserAuthForm() {
       const user = await signUpMutation.mutateAsync({
         email: data.email,
         password: data.password,
-        name: data.companyName // Assuming you want to use companyName as the username
+        name: data.companyName
       });
       console.log('User created:', user);
-      // Handle successful signup (e.g., redirect, show success message)
+
       alert('User created successfully, please log in');
     } catch (error) {
       console.error('Error creating user:', error);
-      throw error; // Rethrow to be caught in onSubmit
+      throw error;
     }
   };
 
@@ -83,7 +82,6 @@ export default function UserAuthForm() {
       }
     } catch (error) {
       console.error('Error:', error);
-      // Handle error (e.g., display error message to user)
     } finally {
       setLoading(false);
     }

@@ -14,7 +14,6 @@ export const authRouter = router({
     )
     .mutation(async ({ input }) => {
       const { email, password } = input;
-      // Implement your login logic here
       const user = await prisma.company.findUnique({ where: { email } });
       if (!user || user.password !== password) {
         throw new Error('Invalid email or password');
@@ -31,7 +30,6 @@ export const authRouter = router({
     )
     .mutation(async ({ input }) => {
       const { email, password, name } = input;
-      // Implement your sign up logic here
       const user = await prisma.company.create({
         data: {
           email,

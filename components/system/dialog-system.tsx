@@ -98,7 +98,7 @@ export default function DialogWeek({
   return (
     <Dialog>
       <DialogTrigger asChild>{children}</DialogTrigger>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="w-full sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>Add week</DialogTitle>
           <DialogDescription>
@@ -108,9 +108,7 @@ export default function DialogWeek({
         <Input
           placeholder="Week title"
           value={weekName}
-          onChange={(e) => {
-            setWeekName(e.target.value);
-          }}
+          onChange={(e) => setWeekName(e.target.value)}
         />
         <Popover>
           <PopoverTrigger asChild>
@@ -138,14 +136,14 @@ export default function DialogWeek({
               </div>
             </Button>
           </PopoverTrigger>
-          <PopoverContent className="max-w-[300px] p-0">
+          <PopoverContent className="w-full max-w-[300px] p-0 sm:max-w-[400px]">
             <Calendar
               initialFocus
               mode="range"
               defaultMonth={new Date()}
               selected={date}
               onSelect={setDate}
-              className="p-0 [&>div]:gap-6 [&>div]:space-x-0 [&_[name=day]]:h-10 [&_[name=day]]:w-10 [&_td]:h-10 [&_td]:w-10 [&_th]:w-10"
+              className="p-0 [&>div]:gap-4 [&_[name=day]]:h-8 [&_[name=day]]:w-8 sm:[&_[name=day]]:h-10 sm:[&_[name=day]]:w-10 [&_td]:h-8 [&_td]:w-8 sm:[&_td]:h-10 sm:[&_td]:w-10 [&_th]:w-8 sm:[&_th]:w-10"
             />
           </PopoverContent>
         </Popover>
