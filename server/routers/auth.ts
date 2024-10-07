@@ -38,5 +38,20 @@ export const authRouter = router({
         }
       });
       return user;
+    }),
+  updateProfile: publicProcedure
+    .input(
+      z.object({
+        name: z.string(),
+        email: z.string()
+      })
+    )
+    .mutation(async ({ input }) => {
+      const { name, email } = input;
+      const user = await prisma.company.update({
+        where: { email },
+        data: { name }
+      });
+      return user;
     })
 });

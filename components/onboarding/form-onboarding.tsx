@@ -3,7 +3,7 @@ import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { trpc } from '@/server/client';
-import { useEffect, useState } from 'react';
+import { useState, useEffect } from 'react';
 
 export default function Page() {
   const [questions, setQuestions] = useState([
@@ -13,10 +13,11 @@ export default function Page() {
     { question: '', answers: ['', '', '', ''] }
   ]);
 
-  const createMutation = trpc.onboarding.create.useMutation();
-  const getByProfileIdQuery = trpc.onboarding.getByProfileId.useQuery({
-    profileId: 1
-  }); // Replace 1 with the actual profileId
+  const createOrUpdateMutation =
+    trpc.onboarding.createOrUpdateCompanyOnboarding.useMutation();
+  const getByCompanyIdQuery = trpc.onboarding.getCompanyOnboarding.useQuery({
+    companyId: 1 // Asume que estamos trabajando con la compañía con ID 1
+  });
 
   const handleQuestionChange = (index: number, value: string) => {
     const newQuestions = [...questions];
@@ -37,8 +38,8 @@ export default function Page() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await createMutation.mutateAsync({
-        profileId: 1, // Replace with the actual profileId
+      await createOrUpdateMutation.mutateAsync({
+        companyId: 1,
         questions: questions
           .filter((q) => q.question.trim() !== '')
           .map((q) => ({
@@ -54,15 +55,20 @@ export default function Page() {
   };
 
   useEffect(() => {
-    if (getByProfileIdQuery.data) {
-      setQuestions(
-        getByProfileIdQuery.data.questions.map((item) => ({
-          question: item.question,
-          answers: item.answers.map((a) => a.answerText)
-        }))
-      );
+    if (getByCompanyIdQuery.data) {
+      const savedQuestions = getByCompanyIdQuery.data.questions;
+      const updatedQuestions = questions.map((q, index) => {
+        if (index < savedQuestions.length) {
+          return {
+            question: savedQuestions[index].question,
+            answers: savedQuestions[index].answers.map((a) => a.answerText)
+          };
+        }
+        return q;
+      });
+      setQuestions(updatedQuestions);
     }
-  }, [getByProfileIdQuery.data]);
+  }, [getByCompanyIdQuery.data]);
 
   return (
     <form

@@ -24,6 +24,7 @@ import { Textarea } from '../ui/textarea';
 import { trpc } from '@/server/client';
 import React, { useState } from 'react';
 import { useSession } from 'next-auth/react';
+import { UploadButton } from '@/lib/uploadthing';
 
 export default function Component({
   taskId,
@@ -66,6 +67,8 @@ export default function Component({
   const [text3, setText3] = useState<string>('');
   const [videoUrl, setVideoUrl] = useState<string>('');
   const [isOpen, setIsOpen] = useState(false);
+  const [fileUrl, setFileUrl] = useState<string>('');
+  const [fileUrl2, setFileUrl2] = useState<string>('');
 
   const handleSelectTask = (Task: any) => {
     setSelectedTask(Task);
@@ -75,14 +78,14 @@ export default function Component({
 
   const addTask = trpc.boostTask.create.useMutation({
     onSuccess: () => {
-      utils.boostTask.get.invalidate();
+      utils.boostTask.getByCompanyId.invalidate({ companyId: parsedUserId });
       setIsOpen(false);
       onUpdate();
     }
   });
   const updateTask = trpc.boostTask.update.useMutation({
     onSuccess: () => {
-      utils.boostTask.get.invalidate();
+      utils.boostTask.getByCompanyId.invalidate({ companyId: parsedUserId });
       setIsOpen(false);
       onUpdate();
     }
@@ -97,8 +100,10 @@ export default function Component({
             name: name,
             title1: title1,
             text1: text1,
+            imageUrl1: fileUrl,
             title2: title2,
             text2: text2,
+            imageUrl2: fileUrl2,
             title3: title3,
             text3: text3
           }
@@ -110,8 +115,10 @@ export default function Component({
             setName('');
             setTitle1('');
             setText1('');
+            setFileUrl('');
             setTitle2('');
             setText2('');
+            setFileUrl2('');
             setTitle3('');
             setText3('');
           }
@@ -145,8 +152,10 @@ export default function Component({
             name: name,
             title1: title1,
             text1: text1,
+            imageUrl1: fileUrl,
             title2: title2,
             text2: text2,
+            imageUrl2: fileUrl2,
             title3: title3,
             text3: text3
           }
@@ -158,8 +167,10 @@ export default function Component({
             setName('');
             setTitle1('');
             setText1('');
+            setFileUrl('');
             setTitle2('');
             setText2('');
+            setFileUrl2('');
             setTitle3('');
             setText3('');
           }
@@ -176,8 +187,10 @@ export default function Component({
           name: name,
           title1: title1,
           text1: text1,
+          imageUrl1: fileUrl,
           title2: title2,
           text2: text2,
+          imageUrl2: fileUrl2,
           title3: title3,
           text3: text3
         }
@@ -199,8 +212,10 @@ export default function Component({
           name: name,
           title1: title1,
           text1: text1,
+          imageUrl1: fileUrl,
           title2: title2,
           text2: text2,
+          imageUrl2: fileUrl2,
           title3: title3,
           text3: text3
         }
@@ -259,7 +274,7 @@ export default function Component({
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>{children}</DialogTrigger>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="max-h-[90vh] w-full overflow-y-auto p-4 sm:max-w-lg">
         <DialogHeader>
           <DialogTitle>{nameProp ? 'Update' : 'Add'} Task</DialogTitle>
           <DialogDescription>
@@ -280,53 +295,81 @@ export default function Component({
           </SelectContent>
         </Select>
         {selectedTask === 'TEXT' && (
-          <div className="grid gap-4">
-            <Label htmlFor="title">Task name</Label>
+          <div className="flex flex-col gap-2">
+            <Label htmlFor="taskName">Task name</Label>
             <Input
-              id="title"
+              id="taskName"
               placeholder="Enter your task name"
               value={name}
               onChange={(e) => {
                 setName(e.target.value);
               }}
             />
-            <Label htmlFor="title">Title</Label>
+            <Label htmlFor="title1">Title</Label>
             <Input
-              id="title"
+              id="title1"
               placeholder="Enter your title"
               value={title1}
               onChange={(e) => {
                 setTitle1(e.target.value);
               }}
             />
-            <Label>Text</Label>
+            <Label htmlFor="text1">Text</Label>
             <Textarea
+              id="text1"
               placeholder="Enter your text"
               value={text1}
               onChange={(e) => {
                 setText1(e.target.value);
               }}
             />
-            <Label htmlFor="title">Title</Label>
+            <UploadButton
+              className="ut-button:bg-black ut-button:text-white dark:ut-button:bg-white dark:ut-button:text-black "
+              endpoint="imageUploader"
+              onClientUploadComplete={(res) => {
+                setFileUrl(res[0].url);
+              }}
+            />
             <Input
-              id="title"
+              value={fileUrl}
+              id="imageUrl"
+              placeholder="Image URL"
+              disabled
+            />
+            <Label htmlFor="title2">Title</Label>
+            <Input
+              id="title2"
               placeholder="Enter your title"
               value={title2}
               onChange={(e) => {
                 setTitle2(e.target.value);
               }}
             />
-            <Label>Text</Label>
+            <Label htmlFor="text2">Text</Label>
             <Textarea
+              id="text2"
               placeholder="Enter your text"
               value={text2}
               onChange={(e) => {
                 setText2(e.target.value);
               }}
             />
-            <Label htmlFor="title">Title</Label>
+            <UploadButton
+              className="ut-button:bg-black ut-button:text-white dark:ut-button:bg-white dark:ut-button:text-black"
+              endpoint="imageUploader"
+              onClientUploadComplete={(res) => {
+                setFileUrl2(res[0].url);
+              }}
+            />
             <Input
-              id="title"
+              value={fileUrl2}
+              id="imageUrl2"
+              placeholder="Image URL"
+              disabled
+            />
+            <Label htmlFor="title3">Title</Label>
+            <Input
+              id="title3"
               placeholder="Enter your title"
               value={title3}
               onChange={(e) => {
@@ -344,83 +387,117 @@ export default function Component({
           </div>
         )}
         {selectedTask === 'VIDEO' && (
-          <div className="grid gap-4">
-            <Label htmlFor="video">Video name</Label>
+          <div className="flex flex-col gap-4">
+            <Label htmlFor="videoName">Video name</Label>
             <Input
-              id="video"
+              id="videoName"
               placeholder="Enter your video name"
               value={name}
               onChange={(e) => {
                 setName(e.target.value);
               }}
             />
-            <Label htmlFor="video">Upload your video here</Label>
-            <Input
-              id="video"
-              value={videoUrl}
-              type="text"
-              onChange={(e) => {
-                setVideoUrl(e.target.value);
+            <Label htmlFor="videoUrl">Upload your video here</Label>
+            <UploadButton
+              className="ut-button:bg-black ut-button:text-white dark:ut-button:bg-white dark:ut-button:text-black"
+              endpoint="imageUploader"
+              onClientUploadComplete={(res) => {
+                setVideoUrl(res[0].url);
               }}
+            />
+            <Input
+              value={videoUrl}
+              id="videoUrl"
+              placeholder="Video URL"
+              disabled
             />
           </div>
         )}
         {selectedTask === 'TIPS' && (
-          <div className="grid gap-4">
-            <Label htmlFor="name">Tips name</Label>
+          <div className="flex flex-col gap-2">
+            <Label htmlFor="tipsName">Tips name</Label>
             <Input
-              id="name"
+              id="tipsName"
               placeholder="Enter your tips name"
               value={name}
               onChange={(e) => {
                 setName(e.target.value);
               }}
             />
-            <Label htmlFor="title">Tip 1</Label>
+            <Label htmlFor="title1">Tip 1</Label>
             <Input
-              id="title"
+              id="title1"
               placeholder="Enter your title"
               value={title1}
               onChange={(e) => {
                 setTitle1(e.target.value);
               }}
             />
-            <Label>Text</Label>
+            <Label htmlFor="text1">Text</Label>
             <Textarea
+              id="text1"
               placeholder="Enter your text"
               value={text1}
               onChange={(e) => {
                 setText1(e.target.value);
               }}
             />
-            <Label htmlFor="title">Tip 2</Label>
+            <UploadButton
+              className="ut-button:bg-black ut-button:text-white dark:ut-button:bg-white dark:ut-button:text-black"
+              endpoint="imageUploader"
+              onClientUploadComplete={(res) => {
+                setFileUrl(res[0].url);
+              }}
+            />
             <Input
-              id="title"
+              value={fileUrl}
+              id="imageUrl"
+              placeholder="Image URL"
+              disabled
+            />
+            <Label htmlFor="title2">Tip 2</Label>
+            <Input
+              id="title2"
               placeholder="Enter your title"
               value={title2}
               onChange={(e) => {
                 setTitle2(e.target.value);
               }}
             />
-            <Label>Text</Label>
+            <Label htmlFor="text2">Text</Label>
             <Textarea
+              id="text2"
               placeholder="Enter your text"
               value={text2}
               onChange={(e) => {
                 setText2(e.target.value);
               }}
             />
-            <Label htmlFor="title">Tip 3</Label>
+            <UploadButton
+              className="ut-button:bg-black ut-button:text-white dark:ut-button:bg-white dark:ut-button:text-black"
+              endpoint="imageUploader"
+              onClientUploadComplete={(res) => {
+                setFileUrl2(res[0].url);
+              }}
+            />
             <Input
-              id="title"
+              value={fileUrl2}
+              id="imageUrl2"
+              placeholder="Image URL"
+              disabled
+            />
+            <Label htmlFor="title3">Tip 3</Label>
+            <Input
+              id="title3"
               placeholder="Enter your title"
               value={title3}
               onChange={(e) => {
                 setTitle3(e.target.value);
               }}
             />
-            <Label>Text</Label>
+            <Label htmlFor="text3">Text</Label>
             <Textarea
+              id="text3"
               placeholder="Enter your text"
               value={text3}
               onChange={(e) => {

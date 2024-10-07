@@ -164,7 +164,7 @@ export default function UserAuthForm() {
           <span className="bg-background px-2 text-muted-foreground">
             <a
               href="#"
-              onClick={() => setIsSignup(!isSignup)} // Cambiar entre login y signup
+              onClick={() => setIsSignup(!isSignup)}
               className="underline"
             >
               {isSignup ? 'Already have an account? Log in' : 'or sign up'}

@@ -3,61 +3,45 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
-  
-}
+    provider  = "postgresql"
+    url       = env("DATABASE_URL")
+    directUrl = env("DIRECT_URL")
+ }
 
 model Company {
   id        Int       @id @default(autoincrement())
   name      String
   email     String    @unique
   password  String
-  profiles     Profile[]
+  profiles  Profile[]
   weeks     Week[]
   boostTasks BoostTask[]
   trainings  Training[]
   events     Event[]
+  onboarding Onboarding?
 }
 
 model Profile {
-  id         Int    @id @default(autoincrement())
-  userId     String   @unique
-  updated_at DateTime  @updatedAt
+  id         Int       @id @default(autoincrement())
+  userid     String    @unique @db.Uuid 
+  updated_at DateTime?  @updatedAt
   username   String?
   first_name  String?
   last_name   String?
   phone       String?
-  birthdate DateTime
+  birthdate DateTime?
   genre    String?
 
-  // Relaciones existentes
-  companyId  Int
-  company    Company   @relation(fields: [companyId], references: [id])
-  progress   UserProgress[]
-  onboarding Onboarding?
+  companyid  Int?      @default(1)
+  company    Company?   @relation(fields: [companyid], references: [id])
+  completedTasks Task[]
+  completedBoostTasks BoostTask[]
+  completedTrainingTasks TrainingTask[]
+  onboardingResponses UserOnboardingResponse[]
 
   @@map("profiles")
 }
 
-model UserProgress {
-  id             Int          @id @default(autoincrement())
-  profileId      Int
-  taskId         Int?
-  boostTaskId    Int?
-  trainingTaskId Int?
-  status         String
-  completedAt    DateTime?
-  onboardingAnswers Json?
-
-  profile        Profile      @relation(fields: [profileId], references: [id], onDelete: Cascade)
-  task           Task?        @relation(fields: [taskId], references: [id])
-  boostTask      BoostTask?   @relation(fields: [boostTaskId], references: [id])
-  trainingTask   TrainingTask? @relation(fields: [trainingTaskId], references: [id])
-
-  createdAt      DateTime     @default(now())
-  updatedAt      DateTime     @updatedAt
-}
 
 model Event {
   id         Int      @id @default(autoincrement())
@@ -84,24 +68,38 @@ model Category {
 
 model Onboarding {
   id        Int       @id @default(autoincrement())
-  profileId    Int       @unique
-  profile      Profile      @relation(fields: [profileId], references: [id])
+  companyId Int       @unique @default(1)
+  company   Company   @relation(fields: [companyId], references: [id])
   questions OnboardingQuestion[]
 }
 
 model OnboardingQuestion {
-  id             Int      @id @default(autoincrement())
-  question       String
-  onboardingId   Int
-  onboarding     Onboarding @relation(fields: [onboardingId], references: [id])
-  answers        Answer[]
+  id           Int      @id @default(autoincrement())
+  question     String
+  onboardingId Int
+  onboarding   Onboarding @relation(fields: [onboardingId], references: [id])
+  answers      OnboardingAnswer[]
+  userResponses UserOnboardingResponse[]
 }
 
-model Answer {
-  id                    Int    @id @default(autoincrement())
-  answerText            String
-  onboardingQuestionId  Int
-  onboardingQuestion    OnboardingQuestion @relation(fields: [onboardingQuestionId], references: [id])
+model OnboardingAnswer {
+  id                   Int    @id @default(autoincrement())
+  answerText           String
+  onboardingQuestionId Int
+  onboardingQuestion   OnboardingQuestion @relation(fields: [onboardingQuestionId], references: [id])
+  userResponses        UserOnboardingResponse[]
+}
+
+model UserOnboardingResponse {
+  id         Int      @id @default(autoincrement())
+  profileId  Int
+  profile    Profile  @relation(fields: [profileId], references: [id])
+  questionId Int
+  question   OnboardingQuestion @relation(fields: [questionId], references: [id])
+  answerId   Int
+  answer     OnboardingAnswer @relation(fields: [answerId], references: [id])
+
+  @@unique([profileId, questionId])
 }
 
 model Week {
@@ -121,7 +119,10 @@ model Task {
   textTask  TextTask?
   videoTask VideoTask?
   tipsTask  TipsTask?
-  userProgress UserProgress[]
+  completedBy Profile?  @relation(fields: [completedById], references: [id])
+  completedById Int?
+  completedAt DateTime?
+  status     String? @default("pending")
 }
 
 model TextTask {
@@ -131,8 +132,10 @@ model TextTask {
   name   String
   title1 String
   text1  String
+  imageUrl1 String
   title2 String
   text2  String
+  imageUrl2 String
   title3 String
   text3  String
 }
@@ -152,8 +155,10 @@ model TipsTask {
   name   String
   title1 String
   text1  String
+  imageUrl1 String
   title2 String
   text2  String
+  imageUrl2 String
   title3 String
   text3  String
 }
@@ -165,7 +170,10 @@ model BoostTask {
   textTask  BoostTextTask?
   videoTask BoostVideoTask?
   tipsTask  BoostTipsTask?
-  userProgress UserProgress[]
+  completedBy Profile?  @relation(fields: [completedById], references: [id])
+  completedById Int?
+  completedAt DateTime?
+  status     String? @default("pending")  
 }
 
 model BoostTextTask {
@@ -175,8 +183,10 @@ model BoostTextTask {
   name      String
   title1    String
   text1     String
+  imageUrl1 String
   title2    String
   text2     String
+  imageUrl2 String
   title3    String
   text3     String
 }
@@ -196,8 +206,10 @@ model BoostTipsTask {
   name      String
   title1    String
   text1     String
+  imageUrl1 String
   title2    String
   text2     String
+  imageUrl2 String
   title3    String
   text3     String
 }
@@ -217,7 +229,10 @@ model TrainingTask {
   textTask  TrainingTextTask?   
   videoTask TrainingVideoTask?  
   tipsTask  TrainingTipsTask?   
-  userProgress UserProgress[]
+  completedBy Profile?  @relation(fields: [completedById], references: [id])
+  completedById Int?
+  completedAt DateTime?
+  status     String? @default("pending")
 }
 
 model TrainingTextTask {
@@ -227,8 +242,10 @@ model TrainingTextTask {
   name      String
   title1    String
   text1     String
+  imageUrl1 String
   title2    String
   text2     String
+  imageUrl2 String
   title3    String
   text3     String
 }
@@ -248,8 +265,10 @@ model TrainingTipsTask {
   name      String
   title1    String
   text1     String
+  imageUrl1 String
   title2    String
   text2     String
+  imageUrl2 String
   title3    String
   text3     String
 }

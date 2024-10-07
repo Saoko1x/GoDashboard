@@ -23,6 +23,7 @@ import {
 import { Textarea } from '../ui/textarea';
 import { trpc } from '@/server/client';
 import React, { useState } from 'react';
+import { UploadButton } from '@/lib/uploadthing';
 
 export default function Component({
   trainingId,
@@ -32,7 +33,9 @@ export default function Component({
   title1Prop,
   text1Prop,
   title2Prop,
+  imageUrl1Prop,
   text2Prop,
+  imageUrl2Prop,
   title3Prop,
   text3Prop,
   videoUrlProp,
@@ -47,6 +50,8 @@ export default function Component({
   text1Prop?: string;
   title2Prop?: string;
   text2Prop?: string;
+  imageUrl1Prop?: string;
+  imageUrl2Prop?: string;
   title3Prop?: string;
   text3Prop?: string;
   videoUrlProp?: string;
@@ -59,6 +64,8 @@ export default function Component({
   const [text1, setText1] = useState<string>('');
   const [title2, setTitle2] = useState<string>('');
   const [text2, setText2] = useState<string>('');
+  const [imageUrl1, setImageUrl1] = useState<string>('');
+  const [imageUrl2, setImageUrl2] = useState<string>('');
   const [title3, setTitle3] = useState<string>('');
   const [text3, setText3] = useState<string>('');
   const [videoUrl, setVideoUrl] = useState<string>('');
@@ -95,8 +102,10 @@ export default function Component({
             name: name,
             title1: title1,
             text1: text1,
+            imageUrl1: imageUrl1,
             title2: title2,
             text2: text2,
+            imageUrl2: imageUrl2,
             title3: title3,
             text3: text3
           }
@@ -108,8 +117,10 @@ export default function Component({
             setName('');
             setTitle1('');
             setText1('');
+            setImageUrl1('');
             setTitle2('');
             setText2('');
+            setImageUrl2('');
             setTitle3('');
             setText3('');
           }
@@ -143,8 +154,10 @@ export default function Component({
             name: name,
             title1: title1,
             text1: text1,
+            imageUrl1: imageUrl1,
             title2: title2,
             text2: text2,
+            imageUrl2: imageUrl2,
             title3: title3,
             text3: text3
           }
@@ -156,8 +169,10 @@ export default function Component({
             setName('');
             setTitle1('');
             setText1('');
+            setImageUrl1('');
             setTitle2('');
             setText2('');
+            setImageUrl2('');
             setTitle3('');
             setText3('');
           }
@@ -174,8 +189,10 @@ export default function Component({
           name: name,
           title1: title1,
           text1: text1,
+          imageUrl1: imageUrl1,
           title2: title2,
           text2: text2,
+          imageUrl2: imageUrl2,
           title3: title3,
           text3: text3
         }
@@ -197,8 +214,10 @@ export default function Component({
           name: name,
           title1: title1,
           text1: text1,
+          imageUrl1: imageUrl1,
           title2: title2,
           text2: text2,
+          imageUrl2: imageUrl2,
           title3: title3,
           text3: text3
         }
@@ -234,6 +253,12 @@ export default function Component({
     if (videoUrlProp) {
       setVideoUrl(videoUrlProp);
     }
+    if (imageUrl1Prop) {
+      setImageUrl1(imageUrl1Prop);
+    }
+    if (imageUrl2Prop) {
+      setImageUrl2(imageUrl2Prop);
+    }
   }, [
     nameProp,
     title1Prop,
@@ -243,7 +268,9 @@ export default function Component({
     title3Prop,
     text3Prop,
     videoUrlProp,
-    selectedTaskProp
+    selectedTaskProp,
+    imageUrl1Prop,
+    imageUrl2Prop
   ]);
 
   const handleButton = () => {
@@ -306,6 +333,19 @@ export default function Component({
                 setText1(e.target.value);
               }}
             />
+            <UploadButton
+              className="ut-button:bg-black ut-button:text-white dark:ut-button:bg-white dark:ut-button:text-black"
+              endpoint="imageUploader"
+              onClientUploadComplete={(res) => {
+                setImageUrl1(res[0].url);
+              }}
+            />
+            <Input
+              value={imageUrl1}
+              id="imageUrl"
+              placeholder="Image URL"
+              disabled
+            />
             <Label htmlFor="title2">Title</Label>
             <Input
               id="title2"
@@ -323,6 +363,19 @@ export default function Component({
               onChange={(e) => {
                 setText2(e.target.value);
               }}
+            />
+            <UploadButton
+              className="ut-button:bg-black ut-button:text-white dark:ut-button:bg-white dark:ut-button:text-black"
+              endpoint="imageUploader"
+              onClientUploadComplete={(res) => {
+                setImageUrl2(res[0].url);
+              }}
+            />
+            <Input
+              value={imageUrl2}
+              id="imageUrl2"
+              placeholder="Image URL"
+              disabled
             />
             <Label htmlFor="title3">Title</Label>
             <Input
@@ -355,14 +408,18 @@ export default function Component({
               }}
             />
             <Label htmlFor="videoUrl">Upload your video here</Label>
-            <Input
-              id="videoUrl"
-              placeholder="Enter your video url"
-              value={videoUrl}
-              type="url"
-              onChange={(e) => {
-                setVideoUrl(e.target.value);
+            <UploadButton
+              className="ut-button:bg-black ut-button:text-white dark:ut-button:bg-white dark:ut-button:text-black"
+              endpoint="imageUploader"
+              onClientUploadComplete={(res) => {
+                setVideoUrl(res[0].url);
               }}
+            />
+            <Input
+              value={videoUrl}
+              id="videoUrl"
+              placeholder="Video URL"
+              disabled
             />
           </div>
         )}
@@ -395,6 +452,19 @@ export default function Component({
                 setText1(e.target.value);
               }}
             />
+            <UploadButton
+              className="ut-button:bg-black ut-button:text-white dark:ut-button:bg-white dark:ut-button:text-black"
+              endpoint="imageUploader"
+              onClientUploadComplete={(res) => {
+                setImageUrl1(res[0].url);
+              }}
+            />
+            <Input
+              value={imageUrl1}
+              id="imageUrl"
+              placeholder="Image URL"
+              disabled
+            />
             <Label htmlFor="title2">Tip 2</Label>
             <Input
               id="title2"
@@ -412,6 +482,19 @@ export default function Component({
               onChange={(e) => {
                 setText2(e.target.value);
               }}
+            />
+            <UploadButton
+              className="ut-button:bg-black ut-button:text-white dark:ut-button:bg-white dark:ut-button:text-black"
+              endpoint="imageUploader"
+              onClientUploadComplete={(res) => {
+                setImageUrl2(res[0].url);
+              }}
+            />
+            <Input
+              value={imageUrl2}
+              id="imageUrl2"
+              placeholder="Image URL"
+              disabled
             />
             <Label htmlFor="title3">Tip 3</Label>
             <Input

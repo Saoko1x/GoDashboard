@@ -13,6 +13,8 @@ import { trpc } from '@/server/client';
 import { Button } from '../ui/button';
 import { useState } from 'react';
 import { useSession } from 'next-auth/react';
+import { UploadButton } from '@/lib/uploadthing';
+
 import React from 'react';
 
 export default function Component({
@@ -36,7 +38,6 @@ export default function Component({
   const [eventUrl, setEventUrl] = useState<string>('');
   const [date, setDate] = useState<string>('');
   const [isOpen, setIsOpen] = useState(false);
-
   const addEvent = trpc.info.create.useMutation();
 
   const addNewEvent = () => {
@@ -82,13 +83,18 @@ export default function Component({
 
           <div className="grid gap-4">
             <Label>Image</Label>
+            <UploadButton
+              className="ut-button:bg-black ut-button:text-white dark:ut-button:bg-white dark:ut-button:text-black"
+              endpoint="imageUploader"
+              onClientUploadComplete={(res) => {
+                setImageUrl(res[0].url);
+              }}
+            />
             <Input
               value={imageUrl}
-              className="flex h-20 items-center justify-center pt-6 text-center"
               id="imageUrl"
-              placeholder="File"
-              required
-              onChange={(e) => setImageUrl(e.target.value)}
+              placeholder="Image URL"
+              disabled
             />
 
             <Label>Title</Label>

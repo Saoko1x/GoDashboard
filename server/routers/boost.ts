@@ -47,7 +47,9 @@ export const boostRouter = router({
             name: z.string(),
             title1: z.string(),
             text1: z.string(),
+            imageUrl1: z.string().url(),
             title2: z.string(),
+            imageUrl2: z.string().url(),
             text2: z.string(),
             title3: z.string(),
             text3: z.string()
@@ -64,8 +66,10 @@ export const boostRouter = router({
             name: z.string(),
             title1: z.string(),
             text1: z.string(),
+            imageUrl1: z.string().url(),
             title2: z.string(),
             text2: z.string(),
+            imageUrl2: z.string().url(),
             title3: z.string(),
             text3: z.string()
           })
@@ -98,8 +102,10 @@ export const boostRouter = router({
             name: z.string(),
             title1: z.string(),
             text1: z.string(),
+            imageUrl1: z.string().url(),
             title2: z.string(),
             text2: z.string(),
+            imageUrl2: z.string().url(),
             title3: z.string(),
             text3: z.string()
           })
@@ -115,8 +121,10 @@ export const boostRouter = router({
             name: z.string(),
             title1: z.string(),
             text1: z.string(),
+            imageUrl1: z.string().url(),
             title2: z.string(),
             text2: z.string(),
+            imageUrl2: z.string().url(),
             title3: z.string(),
             text3: z.string()
           })

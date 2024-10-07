@@ -3,6 +3,7 @@ import { Separator } from '../ui/separator';
 import DialogTask from '@/components/system/dialog-task-system';
 import { Button } from '../ui/button';
 import { Plus } from 'lucide-react';
+import React from 'react';
 
 export default function Component({ weekId }: { weekId: any }) {
   return (

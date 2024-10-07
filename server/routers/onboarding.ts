@@ -5,10 +5,10 @@ import { z } from 'zod';
 const prisma = new PrismaClient();
 
 export const onboardingRouter = router({
-  create: publicProcedure
+  createOrUpdateCompanyOnboarding: publicProcedure
     .input(
       z.object({
-        profileId: z.number(),
+        companyId: z.number(),
         questions: z.array(
           z.object({
             question: z.string(),
@@ -18,97 +18,66 @@ export const onboardingRouter = router({
       })
     )
     .mutation(async ({ input }) => {
-      return prisma.onboarding.create({
-        data: {
-          profileId: input.profileId,
-          questions: {
-            create: input.questions.map((q) => ({
-              question: q.question,
-              answers: {
-                create: q.answers.map((a) => ({ answerText: a }))
-              }
-            }))
-          }
-        },
+      const { companyId, questions } = input;
+
+      const existingOnboarding = await prisma.onboarding.findUnique({
+        where: { companyId }
+      });
+
+      if (existingOnboarding) {
+        // Update existing onboarding
+        return prisma.onboarding.update({
+          where: { companyId },
+          data: {
+            questions: {
+              deleteMany: {},
+              create: questions.map((q) => ({
+                question: q.question,
+                answers: {
+                  create: q.answers.map((a) => ({ answerText: a }))
+                }
+              }))
+            }
+          },
+          include: { questions: { include: { answers: true } } }
+        });
+      } else {
+        // Create new onboarding
+        return prisma.onboarding.create({
+          data: {
+            companyId,
+            questions: {
+              create: questions.map((q) => ({
+                question: q.question,
+                answers: {
+                  create: q.answers.map((a) => ({ answerText: a }))
+                }
+              }))
+            }
+          },
+          include: { questions: { include: { answers: true } } }
+        });
+      }
+    }),
+
+  getCompanyOnboarding: publicProcedure
+    .input(z.object({ companyId: z.number() }))
+    .query(async ({ input }) => {
+      return prisma.onboarding.findFirst({
+        where: { companyId: input.companyId },
         include: { questions: { include: { answers: true } } }
       });
     }),
 
-  getByProfileId: publicProcedure
+  getUserResponses: publicProcedure
     .input(z.object({ profileId: z.number() }))
     .query(async ({ input }) => {
-      return prisma.onboarding.findUnique({
+      return prisma.userOnboardingResponse.findMany({
         where: { profileId: input.profileId },
-        include: { questions: { include: { answers: true } } }
-      });
-    }),
-
-  update: publicProcedure
-    .input(
-      z.object({
-        profileId: z.number(),
-        questions: z.array(
-          z.object({
-            id: z.number().optional(),
-            question: z.string(),
-            answers: z.array(
-              z.object({
-                id: z.number().optional(),
-                answerText: z.string()
-              })
-            )
-          })
-        )
-      })
-    )
-    .mutation(async ({ input }) => {
-      const { profileId, questions } = input;
-
-      const onboarding = await prisma.onboarding.upsert({
-        where: { profileId },
-        create: { profileId },
-        update: {}
-      });
-
-      for (const q of questions) {
-        if (q.id) {
-          await prisma.onboardingQuestion.update({
-            where: { id: q.id },
-            data: {
-              question: q.question,
-              answers: {
-                upsert: q.answers.map((a) => ({
-                  where: { id: a.id || 0 },
-                  create: { answerText: a.answerText },
-                  update: { answerText: a.answerText }
-                }))
-              }
-            }
-          });
-        } else {
-          await prisma.onboardingQuestion.create({
-            data: {
-              onboardingId: onboarding.id,
-              question: q.question,
-              answers: {
-                create: q.answers.map((a) => ({ answerText: a.answerText }))
-              }
-            }
-          });
+        include: {
+          question: true,
+          answer: true
         }
-      }
-
-      return prisma.onboarding.findUnique({
-        where: { profileId },
-        include: { questions: { include: { answers: true } } }
-      });
-    }),
-
-  delete: publicProcedure
-    .input(z.object({ profileId: z.number() }))
-    .mutation(async ({ input }) => {
-      return prisma.onboarding.delete({
-        where: { profileId: input.profileId }
       });
     })
 });

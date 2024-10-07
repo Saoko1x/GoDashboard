@@ -25,8 +25,8 @@ import { useSession } from 'next-auth/react';
 
 export default function Cardtrainings() {
   const { data: session } = useSession();
-  const userId = session?.user?.id;
-  const parsedUserId = parseInt(userId as string);
+  const userId = session?.user?.id as string;
+  const parsedUserId = parseInt(userId);
 
   const {
     data: trainings,

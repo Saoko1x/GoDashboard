@@ -37,8 +37,10 @@ export const weekTaskRouter = router({
             name: z.string(),
             title1: z.string(),
             text1: z.string(),
+            imageUrl1: z.string().url(),
             title2: z.string(),
             text2: z.string(),
+            imageUrl2: z.string().url(),
             title3: z.string(),
             text3: z.string()
           })
@@ -54,8 +56,10 @@ export const weekTaskRouter = router({
             name: z.string(),
             title1: z.string(),
             text1: z.string(),
+            imageUrl1: z.string().url(),
             title2: z.string(),
             text2: z.string(),
+            imageUrl2: z.string().url(),
             title3: z.string(),
             text3: z.string()
           })
@@ -74,8 +78,10 @@ export const weekTaskRouter = router({
                   name: textTask.name,
                   title1: textTask.title1,
                   text1: textTask.text1,
+                  imageUrl1: textTask.imageUrl1,
                   title2: textTask.title2,
                   text2: textTask.text2,
+                  imageUrl2: textTask.imageUrl2,
                   title3: textTask.title3,
                   text3: textTask.text3
                 }
@@ -95,8 +101,10 @@ export const weekTaskRouter = router({
                   name: tipsTask.name,
                   title1: tipsTask.title1,
                   text1: tipsTask.text1,
+                  imageUrl1: tipsTask.imageUrl1,
                   title2: tipsTask.title2,
                   text2: tipsTask.text2,
+                  imageUrl2: tipsTask.imageUrl2,
                   title3: tipsTask.title3,
                   text3: tipsTask.text3
                 }
@@ -116,8 +124,10 @@ export const weekTaskRouter = router({
             name: z.string().optional(),
             title1: z.string().optional(),
             text1: z.string().optional(),
+            imageUrl1: z.string().url().optional(),
             title2: z.string().optional(),
             text2: z.string().optional(),
+            imageUrl2: z.string().url().optional(),
             title3: z.string().optional(),
             text3: z.string().optional()
           })
@@ -133,8 +143,10 @@ export const weekTaskRouter = router({
             name: z.string().optional(),
             title1: z.string().optional(),
             text1: z.string().optional(),
+            imageUrl1: z.string().url().optional(),
             title2: z.string().optional(),
             text2: z.string().optional(),
+            imageUrl2: z.string().url().optional(),
             title3: z.string().optional(),
             text3: z.string().optional()
           })

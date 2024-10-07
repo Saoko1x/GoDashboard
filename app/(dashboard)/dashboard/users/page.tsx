@@ -1,19 +1,18 @@
 import { Breadcrumbs } from '@/components/breadcrumbs';
-import FormProfile from '@/components/profile/form-profile';
-import HeadProfile from '@/components/profile/head-profile';
+import HeadUsers from '@/components/users/head-users';
+import TableUsers from '@/components/users/table-users';
 import React from 'react';
-
 const breadcrumbItems = [
   { title: 'Dashboard', link: '/dashboard' },
-  { title: 'Profile', link: '/dashboard/profile' }
+  { title: 'Users', link: '/dashboard/users' }
 ];
-export default function page() {
+export default function Page() {
   return (
     <>
       <div className="flex-1 space-y-4 p-4 pt-6 md:p-8">
         <Breadcrumbs items={breadcrumbItems} />
-        <HeadProfile />
-        <FormProfile />
+        <HeadUsers />
+        <TableUsers />
       </div>
     </>
   );

@@ -27,9 +27,12 @@ export default function Component() {
 
   const utils = trpc.useContext();
 
-  const boostTask = trpc.boostTask.getByCompanyId.useQuery({
-    companyId: parsedUserId
-  });
+  const { data: boostTask, isLoading } = trpc.boostTask.getByCompanyId.useQuery(
+    {
+      companyId: parsedUserId
+    }
+  );
+  console.log(boostTask);
 
   const deleteTask = trpc.boostTask.delete.useMutation({
     onSuccess: () => {
@@ -49,14 +52,12 @@ export default function Component() {
     }
   };
 
-  const { isLoading } = trpc.boostTask.get.useQuery();
-
   if (isLoading) {
     return <div>Loading...</div>;
   }
   return (
     <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-      {boostTask.data?.map((task) => (
+      {boostTask?.map((task) => (
         <div key={task.id}>
           {task.id && task.videoTask && (
             <Card

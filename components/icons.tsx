@@ -28,13 +28,15 @@ import {
   User,
   User2Icon,
   UserX2Icon,
-  X
+  X,
+  UserCheck
 } from 'lucide-react';
 
 export type Icon = LucideIcon;
 
 export const Icons = {
   dashboard: LayoutDashboardIcon,
+  users: UserCheck,
   logo: Command,
   login: LogIn,
   close: X,

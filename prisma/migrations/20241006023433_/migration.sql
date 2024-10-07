@@ -11,33 +11,17 @@ CREATE TABLE "Company" (
 -- CreateTable
 CREATE TABLE "profiles" (
     "id" SERIAL NOT NULL,
-    "userId" TEXT NOT NULL,
-    "updated_at" TIMESTAMP(3) NOT NULL,
+    "userid" UUID NOT NULL,
+    "updated_at" TIMESTAMP(3),
     "username" TEXT,
     "first_name" TEXT,
     "last_name" TEXT,
     "phone" TEXT,
-    "birthdate" TIMESTAMP(3) NOT NULL,
+    "birthdate" TIMESTAMP(3),
     "genre" TEXT,
-    "companyId" INTEGER NOT NULL,
+    "companyid" INTEGER NOT NULL DEFAULT 1,
 
     CONSTRAINT "profiles_pkey" PRIMARY KEY ("id")
-);
-
--- CreateTable
-CREATE TABLE "UserProgress" (
-    "id" SERIAL NOT NULL,
-    "profileId" INTEGER NOT NULL,
-    "taskId" INTEGER,
-    "boostTaskId" INTEGER,
-    "trainingTaskId" INTEGER,
-    "status" TEXT NOT NULL,
-    "completedAt" TIMESTAMP(3),
-    "onboardingAnswers" JSONB,
-    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" TIMESTAMP(3) NOT NULL,
-
-    CONSTRAINT "UserProgress_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -106,6 +90,9 @@ CREATE TABLE "Week" (
 CREATE TABLE "Task" (
     "id" SERIAL NOT NULL,
     "weekId" INTEGER NOT NULL,
+    "completedById" INTEGER,
+    "completedAt" TIMESTAMP(3),
+    "status" TEXT,
 
     CONSTRAINT "Task_pkey" PRIMARY KEY ("id")
 );
@@ -154,6 +141,9 @@ CREATE TABLE "TipsTask" (
 CREATE TABLE "BoostTask" (
     "id" SERIAL NOT NULL,
     "companyId" INTEGER NOT NULL,
+    "completedById" INTEGER,
+    "completedAt" TIMESTAMP(3),
+    "status" TEXT,
 
     CONSTRAINT "BoostTask_pkey" PRIMARY KEY ("id")
 );
@@ -211,6 +201,9 @@ CREATE TABLE "Training" (
 CREATE TABLE "TrainingTask" (
     "id" SERIAL NOT NULL,
     "trainingId" INTEGER NOT NULL,
+    "completedById" INTEGER,
+    "completedAt" TIMESTAMP(3),
+    "status" TEXT,
 
     CONSTRAINT "TrainingTask_pkey" PRIMARY KEY ("id")
 );
@@ -259,7 +252,7 @@ CREATE TABLE "TrainingTipsTask" (
 CREATE UNIQUE INDEX "Company_email_key" ON "Company"("email");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "profiles_userId_key" ON "profiles"("userId");
+CREATE UNIQUE INDEX "profiles_userid_key" ON "profiles"("userid");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Onboarding_profileId_key" ON "Onboarding"("profileId");
@@ -292,19 +285,7 @@ CREATE UNIQUE INDEX "TrainingVideoTask_taskId_key" ON "TrainingVideoTask"("taskI
 CREATE UNIQUE INDEX "TrainingTipsTask_taskId_key" ON "TrainingTipsTask"("taskId");
 
 -- AddForeignKey
-ALTER TABLE "profiles" ADD CONSTRAINT "profiles_companyId_fkey" FOREIGN KEY ("companyId") REFERENCES "Company"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "UserProgress" ADD CONSTRAINT "UserProgress_profileId_fkey" FOREIGN KEY ("profileId") REFERENCES "profiles"("id") ON DELETE CASCADE ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "UserProgress" ADD CONSTRAINT "UserProgress_taskId_fkey" FOREIGN KEY ("taskId") REFERENCES "Task"("id") ON DELETE SET NULL ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "UserProgress" ADD CONSTRAINT "UserProgress_boostTaskId_fkey" FOREIGN KEY ("boostTaskId") REFERENCES "BoostTask"("id") ON DELETE SET NULL ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "UserProgress" ADD CONSTRAINT "UserProgress_trainingTaskId_fkey" FOREIGN KEY ("trainingTaskId") REFERENCES "TrainingTask"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "profiles" ADD CONSTRAINT "profiles_companyid_fkey" FOREIGN KEY ("companyid") REFERENCES "Company"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Event" ADD CONSTRAINT "Event_categoryId_fkey" FOREIGN KEY ("categoryId") REFERENCES "Category"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
@@ -328,6 +309,9 @@ ALTER TABLE "Week" ADD CONSTRAINT "Week_companyId_fkey" FOREIGN KEY ("companyId"
 ALTER TABLE "Task" ADD CONSTRAINT "Task_weekId_fkey" FOREIGN KEY ("weekId") REFERENCES "Week"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
+ALTER TABLE "Task" ADD CONSTRAINT "Task_completedById_fkey" FOREIGN KEY ("completedById") REFERENCES "profiles"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
 ALTER TABLE "TextTask" ADD CONSTRAINT "TextTask_taskId_fkey" FOREIGN KEY ("taskId") REFERENCES "Task"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
@@ -338,6 +322,9 @@ ALTER TABLE "TipsTask" ADD CONSTRAINT "TipsTask_taskId_fkey" FOREIGN KEY ("taskI
 
 -- AddForeignKey
 ALTER TABLE "BoostTask" ADD CONSTRAINT "BoostTask_companyId_fkey" FOREIGN KEY ("companyId") REFERENCES "Company"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "BoostTask" ADD CONSTRAINT "BoostTask_completedById_fkey" FOREIGN KEY ("completedById") REFERENCES "profiles"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "BoostTextTask" ADD CONSTRAINT "BoostTextTask_taskId_fkey" FOREIGN KEY ("taskId") REFERENCES "BoostTask"("id") ON DELETE CASCADE ON UPDATE CASCADE;
@@ -353,6 +340,9 @@ ALTER TABLE "Training" ADD CONSTRAINT "Training_companyId_fkey" FOREIGN KEY ("co
 
 -- AddForeignKey
 ALTER TABLE "TrainingTask" ADD CONSTRAINT "TrainingTask_trainingId_fkey" FOREIGN KEY ("trainingId") REFERENCES "Training"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "TrainingTask" ADD CONSTRAINT "TrainingTask_completedById_fkey" FOREIGN KEY ("completedById") REFERENCES "profiles"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "TrainingTextTask" ADD CONSTRAINT "TrainingTextTask_taskId_fkey" FOREIGN KEY ("taskId") REFERENCES "TrainingTask"("id") ON DELETE CASCADE ON UPDATE CASCADE;

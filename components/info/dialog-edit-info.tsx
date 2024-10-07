@@ -33,9 +33,6 @@ export default function Component({
   category: number;
   onUpdate: () => void;
 }) {
-  const { data: session } = useSession();
-  const userId = session?.user?.id;
-  const parsedUserId = parseInt(userId as string);
   const [titles, setTitle] = useState<string>(title);
   const [imageUrls, setImageUrl] = useState<string>(imageUrl);
   const [eventUrls, setEventUrl] = useState<string>(eventUrl);
