@@ -3,6 +3,7 @@ import { trpc } from '@/server/client';
 import ActiveCard from '../news/card';
 import DialogInfo from '../info/dialog-info';
 import { useSession } from 'next-auth/react';
+import { Button } from '../ui/button';
 
 export function CardEvents({ category }: { category: number }) {
   const { data: session } = useSession();
@@ -31,7 +32,9 @@ export function CardEvents({ category }: { category: number }) {
     <section className="mt-4">
       <div className="flex flex-row justify-between">
         <h1>Active</h1>
-        <DialogInfo category={category} onUpdate={handleUpdate} />
+        <DialogInfo category={category} onUpdate={handleUpdate}>
+          <Button>Add Event</Button>
+        </DialogInfo>
       </div>
       <div className="my-4 grid gap-4 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         {filteredEvents
@@ -72,8 +75,10 @@ export function CardEvents({ category }: { category: number }) {
 }
 
 export function CardNews({ category }: { category: number }) {
+  const utils = trpc.useContext();
+
   const handleUpdate = () => {
-    refetch();
+    utils.info.get.invalidate();
   };
   const { data: news, isLoading, refetch } = trpc.info.get.useQuery();
 
@@ -88,7 +93,9 @@ export function CardNews({ category }: { category: number }) {
     <section className="mt-4">
       <div className="flex flex-row justify-between">
         <h1>Active</h1>
-        <DialogInfo category={category} onUpdate={handleUpdate} />
+        <DialogInfo category={category} onUpdate={handleUpdate}>
+          <Button>Add News</Button>
+        </DialogInfo>
       </div>
       <div className="my-4 grid gap-4 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         {filteredNews
@@ -146,7 +153,9 @@ export function CardPromotions({ category }: { category: number }) {
     <section className="mt-4">
       <div className="flex flex-row justify-between">
         <h1>Active</h1>
-        <DialogInfo category={category} onUpdate={handleUpdate} />
+        <DialogInfo category={category} onUpdate={handleUpdate}>
+          <Button>Add Promotion</Button>
+        </DialogInfo>
       </div>
       <div className="my-4 grid gap-4 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         {filteredPromotions

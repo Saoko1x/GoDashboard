@@ -3,8 +3,9 @@ import Image from 'next/image';
 import { Link1Icon, TrashIcon } from '@radix-ui/react-icons';
 import { Button } from '../ui/button';
 import Link from 'next/link';
-import DialogEditInfo from '@/components/info/dialog-edit-info';
 import { trpc } from '@/server/client';
+import DialogInfo from '@/components/info/dialog-info';
+import { PencilIcon } from 'lucide-react';
 
 export default function ActiveCard({
   title,
@@ -65,15 +66,20 @@ export default function ActiveCard({
         {/* Contenedor para los íconos centrados */}
         <div className="flex h-full items-center justify-center">
           <div className="group/edit invisible flex gap-4 group-hover/item:visible">
-            <DialogEditInfo
-              title={title}
-              imageUrl={imageUrl}
-              eventUrl={eventUrl}
-              date={date}
-              id={id}
+            <DialogInfo
+              titleProp={title}
+              imageUrlProp={imageUrl}
+              eventUrlProp={eventUrl}
+              dateProp={date}
+              idProp={id}
               category={category}
               onUpdate={handleUpdate}
-            />
+            >
+              <Button className="gap-2">
+                <PencilIcon className="h-4 w-4" />
+                Edit
+              </Button>
+            </DialogInfo>
 
             <Link href={eventUrl} target="_blank">
               <Button className="gap-2">
