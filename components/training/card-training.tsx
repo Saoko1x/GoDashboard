@@ -27,6 +27,7 @@ export default function Cardtrainings() {
   const { data: session } = useSession();
   const userId = session?.user?.id as string;
   const parsedUserId = parseInt(userId);
+  const utils = trpc.useContext();
 
   const {
     data: trainings,
@@ -36,6 +37,10 @@ export default function Cardtrainings() {
     companyId: parsedUserId
   });
   const deleteTraining = trpc.training.delete.useMutation();
+
+  const handleUpdate = () => {
+    utils.training.getByCompanyId.invalidate({ companyId: parsedUserId });
+  };
 
   const delTraining = (trainingId: number) => {
     try {
@@ -123,6 +128,7 @@ export default function Cardtrainings() {
             <DialogTraining
               trainingId={training.id}
               trainingNameProp={training.name}
+              onUpdate={handleUpdate}
             >
               <Button variant="ghost" size="sm">
                 <PenIcon className="h-5 w-5" />

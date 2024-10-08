@@ -28,13 +28,15 @@ export default function DialogWeek({
   weekNameProp,
   weekStartDateProp,
   weekEndDateProp,
-  children
+  children,
+  onUpdate
 }: {
   weekId?: number;
   weekNameProp?: string;
   weekStartDateProp?: string;
   weekEndDateProp?: string;
   children: React.ReactNode;
+  onUpdate: () => void;
 }) {
   const { data: session } = useSession();
   const userId = session?.user?.id;
@@ -45,9 +47,25 @@ export default function DialogWeek({
     to: addDays(new Date(), 1)
   });
   const [weekName, setWeekName] = React.useState('');
+  const [isOpen, setIsOpen] = React.useState(false);
 
-  const addWeek = trpc.weeks.create.useMutation();
-  const { refetch } = trpc.weeks.get.useQuery();
+  const utils = trpc.useContext();
+
+  const addWeek = trpc.weeks.create.useMutation({
+    onSuccess: () => {
+      utils.weeks.getByCompanyId.invalidate({ companyId: parsedUserId });
+      setIsOpen(false);
+      onUpdate();
+    }
+  });
+
+  const updateWeek = trpc.weeks.update.useMutation({
+    onSuccess: () => {
+      utils.weeks.getByCompanyId.invalidate({ companyId: parsedUserId });
+      setIsOpen(false);
+      onUpdate();
+    }
+  });
 
   const handleAddWeek = () => {
     if (date?.from && date?.to) {
@@ -59,8 +77,6 @@ export default function DialogWeek({
       });
     }
   };
-
-  const updateWeek = trpc.weeks.update.useMutation();
 
   const handleUpdateWeek = () => {
     if (date?.from && date?.to) {
@@ -88,15 +104,13 @@ export default function DialogWeek({
   const handleButton = () => {
     if (weekNameProp) {
       handleUpdateWeek();
-      refetch();
     } else {
       handleAddWeek();
-      refetch();
     }
   };
 
   return (
-    <Dialog>
+    <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>{children}</DialogTrigger>
       <DialogContent className="w-full sm:max-w-[425px]">
         <DialogHeader>

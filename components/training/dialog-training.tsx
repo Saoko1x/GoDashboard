@@ -1,7 +1,7 @@
 'use client';
 import { Button } from '@/components/ui/button';
 import { Plus } from 'lucide-react';
-import React from 'react';
+import React, { useState } from 'react';
 import {
   Dialog,
   DialogContent,
@@ -18,20 +18,36 @@ import { useSession } from 'next-auth/react';
 export default function DialogWeek({
   children,
   trainingNameProp,
-  trainingId
+  trainingId,
+  onUpdate
 }: {
   children: React.ReactNode;
   trainingNameProp?: string;
   trainingId?: number;
+  onUpdate: () => void;
 }) {
   const { data: session } = useSession();
   const userId = session?.user?.id;
   const parsedUserId = parseInt(userId as string);
   const [trainingName, setTrainingName] = React.useState('');
-  const addTraining = trpc.training.create.useMutation();
-  const { data: trainings, refetch } = trpc.training.get.useQuery();
+  const [isOpen, setIsOpen] = useState(false);
 
-  const updateTraining = trpc.training.update.useMutation();
+  const addTraining = trpc.training.create.useMutation({
+    onSuccess: () => {
+      setIsOpen(false);
+      utils.training.getByCompanyId.invalidate({ companyId: parsedUserId });
+      onUpdate();
+    }
+  });
+  const utils = trpc.useContext();
+
+  const updateTraining = trpc.training.update.useMutation({
+    onSuccess: () => {
+      utils.training.getByCompanyId.invalidate({ companyId: parsedUserId });
+      setIsOpen(false);
+      onUpdate();
+    }
+  });
 
   const handleAddTraining = () => {
     addTraining.mutate({
@@ -56,14 +72,12 @@ export default function DialogWeek({
   const handleButton = () => {
     if (trainingNameProp) {
       handleUpdateTraining();
-      refetch();
     } else {
       handleAddTraining();
-      refetch();
     }
   };
   return (
-    <Dialog>
+    <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>{children}</DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>

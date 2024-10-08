@@ -32,8 +32,10 @@ export default function Component({
   nameProp,
   title1Prop,
   text1Prop,
+  imageUrl1Prop,
   title2Prop,
   text2Prop,
+  imageUrl2Prop,
   title3Prop,
   text3Prop,
   videoUrlProp,
@@ -46,8 +48,10 @@ export default function Component({
   nameProp?: string;
   title1Prop?: string;
   text1Prop?: string;
+  imageUrl1Prop?: string;
   title2Prop?: string;
   text2Prop?: string;
+  imageUrl2Prop?: string;
   title3Prop?: string;
   text3Prop?: string;
   videoUrlProp?: string;
@@ -66,6 +70,7 @@ export default function Component({
   const [isOpen, setIsOpen] = useState(false);
   const [imageUrl, setImageUrl] = useState<string>('');
   const [imageUrl2, setImageUrl2] = useState<string>('');
+
   const handleSelectTask = (Task: any) => {
     setSelectedTask(Task);
   };
@@ -248,6 +253,12 @@ export default function Component({
     if (videoUrlProp) {
       setVideoUrl(videoUrlProp);
     }
+    if (imageUrl1Prop) {
+      setImageUrl(imageUrl1Prop);
+    }
+    if (imageUrl2Prop) {
+      setImageUrl2(imageUrl2Prop);
+    }
   }, [
     nameProp,
     title1Prop,
@@ -257,7 +268,9 @@ export default function Component({
     title3Prop,
     text3Prop,
     videoUrlProp,
-    selectedTaskProp
+    selectedTaskProp,
+    imageUrl1Prop,
+    imageUrl2Prop
   ]);
 
   const handleButton = () => {
@@ -329,7 +342,7 @@ export default function Component({
             />
             <Input
               value={imageUrl}
-              id="imageUrl"
+              id="imageUrl1"
               placeholder="Image URL"
               disabled
             />

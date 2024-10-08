@@ -1,4 +1,4 @@
-import React from 'react';
+'use client';
 import { Heading } from '../ui/heading';
 import DialogWeek from '@/components/system/dialog-system';
 import { Separator } from '@/components/ui/separator';
@@ -10,7 +10,7 @@ export default function Component() {
     <>
       <div className="flex items-start justify-between">
         <Heading title="Weeks" description="List of all the weeks." />
-        <DialogWeek>
+        <DialogWeek onUpdate={() => {}}>
           <Button>
             <Plus className="mr-2 h-4 w-4" />
             Add week

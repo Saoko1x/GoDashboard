@@ -28,6 +28,13 @@ export default function CardWeeks() {
   const userId = session?.user?.id;
   const parsedUserId = parseInt(userId as string);
 
+  const utils = trpc.useContext();
+
+  const handleUpdate = () => {
+    refetch();
+    utils.weeks.getByCompanyId.invalidate({ companyId: parsedUserId });
+  };
+
   const {
     data: weeks,
     isLoading,
@@ -135,6 +142,7 @@ export default function CardWeeks() {
               weekNameProp={week.name}
               weekEndDateProp={week.endDate}
               weekStartDateProp={week.startDate}
+              onUpdate={handleUpdate}
             >
               <Button variant="ghost" size="sm">
                 <PenIcon className="h-5 w-5" />

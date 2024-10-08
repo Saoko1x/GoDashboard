@@ -4,6 +4,7 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { trpc } from '@/server/client';
 import { useState, useEffect } from 'react';
+import { useSession } from 'next-auth/react';
 
 export default function Page() {
   const [questions, setQuestions] = useState([
@@ -12,12 +13,20 @@ export default function Page() {
     { question: '', answers: ['', '', '', ''] },
     { question: '', answers: ['', '', '', ''] }
   ]);
+  const { data: session } = useSession();
+  const userId = session?.user?.id;
+  const parsedUserId = parseInt(userId as string);
 
   const createOrUpdateMutation =
     trpc.onboarding.createOrUpdateCompanyOnboarding.useMutation();
-  const getByCompanyIdQuery = trpc.onboarding.getCompanyOnboarding.useQuery({
-    companyId: 1 // Asume que estamos trabajando con la compañía con ID 1
-  });
+  const getByCompanyIdQuery = trpc.onboarding.getCompanyOnboarding.useQuery(
+    {
+      companyId: parsedUserId
+    },
+    {
+      enabled: !!parsedUserId // Only run the query if we have a valid userId
+    }
+  );
 
   const handleQuestionChange = (index: number, value: string) => {
     const newQuestions = [...questions];
@@ -37,9 +46,13 @@ export default function Page() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!parsedUserId) {
+      alert('User ID is not available. Please log in.');
+      return;
+    }
     try {
       await createOrUpdateMutation.mutateAsync({
-        companyId: 1,
+        companyId: parsedUserId,
         questions: questions
           .filter((q) => q.question.trim() !== '')
           .map((q) => ({
@@ -48,6 +61,8 @@ export default function Page() {
           }))
       });
       alert('Onboarding questions saved successfully!');
+      // Refetch the query to update the displayed data
+      getByCompanyIdQuery.refetch();
     } catch (error) {
       console.error('Error saving onboarding questions:', error);
       alert('Error saving onboarding questions. Please try again.');

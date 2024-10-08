@@ -20,44 +20,64 @@ export const onboardingRouter = router({
     .mutation(async ({ input }) => {
       const { companyId, questions } = input;
 
-      const existingOnboarding = await prisma.onboarding.findUnique({
-        where: { companyId }
-      });
-
-      if (existingOnboarding) {
-        // Update existing onboarding
-        return prisma.onboarding.update({
+      return prisma.$transaction(async (prisma) => {
+        // Buscar el onboarding existente para esta empresa específica
+        const existingOnboarding = await prisma.onboarding.findUnique({
           where: { companyId },
-          data: {
+          include: {
             questions: {
-              deleteMany: {},
-              create: questions.map((q) => ({
-                question: q.question,
-                answers: {
-                  create: q.answers.map((a) => ({ answerText: a }))
-                }
-              }))
+              include: {
+                answers: true
+              }
             }
-          },
-          include: { questions: { include: { answers: true } } }
+          }
         });
-      } else {
-        // Create new onboarding
-        return prisma.onboarding.create({
-          data: {
-            companyId,
-            questions: {
-              create: questions.map((q) => ({
-                question: q.question,
-                answers: {
-                  create: q.answers.map((a) => ({ answerText: a }))
-                }
-              }))
+
+        if (existingOnboarding) {
+          // Eliminar respuestas y preguntas existentes para esta empresa
+          await prisma.onboardingAnswer.deleteMany({
+            where: {
+              onboardingQuestion: { onboardingId: existingOnboarding.id }
             }
-          },
-          include: { questions: { include: { answers: true } } }
-        });
-      }
+          });
+
+          await prisma.onboardingQuestion.deleteMany({
+            where: { onboardingId: existingOnboarding.id }
+          });
+
+          // Actualizar el onboarding existente con las nuevas preguntas y respuestas
+          return prisma.onboarding.update({
+            where: { companyId },
+            data: {
+              questions: {
+                create: questions.map((q) => ({
+                  question: q.question,
+                  answers: {
+                    create: q.answers.map((a) => ({ answerText: a }))
+                  }
+                }))
+              }
+            },
+            include: { questions: { include: { answers: true } } }
+          });
+        } else {
+          // Crear un nuevo onboarding para esta empresa
+          return prisma.onboarding.create({
+            data: {
+              companyId,
+              questions: {
+                create: questions.map((q) => ({
+                  question: q.question,
+                  answers: {
+                    create: q.answers.map((a) => ({ answerText: a }))
+                  }
+                }))
+              }
+            },
+            include: { questions: { include: { answers: true } } }
+          });
+        }
+      });
     }),
 
   getCompanyOnboarding: publicProcedure

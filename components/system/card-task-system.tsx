@@ -156,8 +156,10 @@ export default function Component({ weekId }: { weekId: any }) {
                   nameProp={task.textTask.name}
                   title1Prop={task.textTask.title1}
                   text1Prop={task.textTask.text1}
+                  imageUrl1Prop={task.textTask.imageUrl1}
                   title2Prop={task.textTask.title2}
                   text2Prop={task.textTask.text2}
+                  imageUrl2Prop={task.textTask.imageUrl2}
                   title3Prop={task.textTask.title3}
                   text3Prop={task.textTask.text3}
                   onUpdate={handleUpdate}
@@ -231,8 +233,10 @@ export default function Component({ weekId }: { weekId: any }) {
                   nameProp={task.tipsTask.name}
                   title1Prop={task.tipsTask.title1}
                   text1Prop={task.tipsTask.text1}
+                  imageUrl1Prop={task.tipsTask.imageUrl1}
                   title2Prop={task.tipsTask.title2}
                   text2Prop={task.tipsTask.text2}
+                  imageUrl2Prop={task.tipsTask.imageUrl2}
                   title3Prop={task.tipsTask.title3}
                   text3Prop={task.tipsTask.text3}
                   onUpdate={handleUpdate}
