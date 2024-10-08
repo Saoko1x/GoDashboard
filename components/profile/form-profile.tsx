@@ -24,7 +24,7 @@ import { trpc } from '@/server/client';
 
 export default function ProfileForm() {
   const { toast } = useToast();
-  const { data: session } = useSession();
+  const { data: session, update: updateSession } = useSession();
   const [name, setName] = useState(session?.user?.name || '');
   const [email, setEmail] = useState(session?.user?.email || '');
   const { mutate } = trpc.auth.updateProfile.useMutation();
@@ -33,12 +33,22 @@ export default function ProfileForm() {
     mode: 'onChange'
   });
 
-  function onSubmit(data: { name: string; email: string }) {
-    mutate({ name, email });
-    toast({
-      title: 'Profile updated successfully',
-      description: `${data.name} ${data.email}`
-    });
+  async function onSubmit(data: { name: string; email: string }) {
+    try {
+      await mutate({ name, email });
+      await updateSession();
+      toast({
+        title: 'Profile updated successfully',
+        description: `${data.name} ${data.email}`
+      });
+    } catch (error) {
+      console.error('Error updating profile:', error);
+      toast({
+        title: 'Error updating profile',
+        description: 'An error occurred while updating your profile.',
+        variant: 'destructive'
+      });
+    }
   }
 
   return (

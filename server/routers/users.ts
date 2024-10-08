@@ -40,6 +40,8 @@ export const usersRouter = router({
       select: {
         id: true,
         username: true,
+        first_name: true,
+        last_name: true,
         _count: {
           select: {
             completedTasks: true,

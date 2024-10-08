@@ -39,6 +39,7 @@ import { trpc } from '@/server/client';
 
 export type UserProgress = {
   id: number;
+  fullName: string;
   email: string;
   completedTasks: number;
   completedBoostTasks: number;
@@ -72,6 +73,23 @@ export const columns: ColumnDef<UserProgress>[] = [
     accessorKey: 'id',
     header: 'ID',
     cell: ({ row }) => <div className="capitalize">{row.getValue('id')}</div>
+  },
+  {
+    accessorKey: 'fullName',
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+        >
+          Full Name
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      );
+    },
+    cell: ({ row }) => (
+      <div className="capitalize">{row.getValue('fullName')}</div>
+    )
   },
   {
     accessorKey: 'email',
@@ -118,14 +136,6 @@ export const columns: ColumnDef<UserProgress>[] = [
       );
     }
   },
-  {
-    accessorKey: 'status',
-    header: () => <div className="text-right">Status</div>,
-    cell: ({ row }) => {
-      const status = row.getValue('status') as string;
-      return <div className="text-right font-medium">{status}</div>;
-    }
-  },
 
   {
     id: 'actions',
@@ -148,11 +158,11 @@ export const columns: ColumnDef<UserProgress>[] = [
                 navigator.clipboard.writeText(userProgress.id.toString())
               }
             >
-              Copy payment ID
+              Copy ID
             </DropdownMenuItem>
-            <DropdownMenuSeparator />
+            {/* <DropdownMenuSeparator />
             <DropdownMenuItem>View customer</DropdownMenuItem>
-            <DropdownMenuItem>View payment details</DropdownMenuItem>
+            <DropdownMenuItem>View payment details</DropdownMenuItem> */}
           </DropdownMenuContent>
         </DropdownMenu>
       );
@@ -168,6 +178,7 @@ export default function DataTableDemo() {
     if (!users) return [];
     return users.map((user) => ({
       id: user.id,
+      fullName: `${user.first_name} ${user.last_name}`,
       email: user.username!,
       completedTasks: user._count.completedTasks,
       completedBoostTasks: user._count.completedBoostTasks,
