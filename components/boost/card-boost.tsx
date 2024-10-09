@@ -19,17 +19,16 @@ import {
 import DialogTask from './dialog-boost';
 import { useSession } from 'next-auth/react';
 import React from 'react';
+import { useCompanyId } from '@/hooks/useCompanyid';
 
 export default function Component() {
-  const { data: session } = useSession();
-  const userId = session?.user?.id;
-  const parsedUserId = parseInt(userId as string);
+  const { companyId } = useCompanyId();
 
   const utils = trpc.useContext();
 
   const { data: boostTask, isLoading } = trpc.boostTask.getByCompanyId.useQuery(
     {
-      companyId: parsedUserId
+      companyId: companyId
     }
   );
   console.log(boostTask);

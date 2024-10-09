@@ -4,7 +4,7 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { trpc } from '@/server/client';
 import { useState, useEffect } from 'react';
-import { useSession } from 'next-auth/react';
+import { useCompanyId } from '@/hooks/useCompanyid';
 
 export default function Page() {
   const [questions, setQuestions] = useState([
@@ -13,18 +13,16 @@ export default function Page() {
     { question: '', answers: ['', '', '', ''] },
     { question: '', answers: ['', '', '', ''] }
   ]);
-  const { data: session } = useSession();
-  const userId = session?.user?.id;
-  const parsedUserId = parseInt(userId as string);
+  const { companyId } = useCompanyId();
 
   const createOrUpdateMutation =
     trpc.onboarding.createOrUpdateCompanyOnboarding.useMutation();
   const getByCompanyIdQuery = trpc.onboarding.getCompanyOnboarding.useQuery(
     {
-      companyId: parsedUserId
+      companyId: companyId
     },
     {
-      enabled: !!parsedUserId // Only run the query if we have a valid userId
+      enabled: !!companyId // Only run the query if we have a valid userId
     }
   );
 
@@ -46,13 +44,13 @@ export default function Page() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!parsedUserId) {
+    if (!companyId) {
       alert('User ID is not available. Please log in.');
       return;
     }
     try {
       await createOrUpdateMutation.mutateAsync({
-        companyId: parsedUserId,
+        companyId: companyId,
         questions: questions
           .filter((q) => q.question.trim() !== '')
           .map((q) => ({

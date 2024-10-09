@@ -21,7 +21,7 @@ import {
 } from '@/components/ui/dialog';
 import { trpc } from '@/server/client';
 import { Input } from '../ui/input';
-import { useSession } from 'next-auth/react';
+import { useCompanyId } from '@/hooks/useCompanyid';
 
 export default function DialogWeek({
   weekId,
@@ -38,9 +38,7 @@ export default function DialogWeek({
   children: React.ReactNode;
   onUpdate: () => void;
 }) {
-  const { data: session } = useSession();
-  const userId = session?.user?.id;
-  const parsedUserId = parseInt(userId as string);
+  const { companyId } = useCompanyId();
 
   const [date, setDate] = React.useState<DateRange | undefined>({
     from: new Date(),
@@ -53,7 +51,7 @@ export default function DialogWeek({
 
   const addWeek = trpc.weeks.create.useMutation({
     onSuccess: () => {
-      utils.weeks.getByCompanyId.invalidate({ companyId: parsedUserId });
+      utils.weeks.getByCompanyId.invalidate({ companyId: companyId });
       setIsOpen(false);
       onUpdate();
     }
@@ -61,7 +59,7 @@ export default function DialogWeek({
 
   const updateWeek = trpc.weeks.update.useMutation({
     onSuccess: () => {
-      utils.weeks.getByCompanyId.invalidate({ companyId: parsedUserId });
+      utils.weeks.getByCompanyId.invalidate({ companyId: companyId });
       setIsOpen(false);
       onUpdate();
     }
@@ -73,7 +71,7 @@ export default function DialogWeek({
         name: weekName,
         startDate: date.from.toDateString(),
         endDate: date.to.toDateString(),
-        companyId: parsedUserId
+        companyId: companyId
       });
     }
   };

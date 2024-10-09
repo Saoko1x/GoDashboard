@@ -23,8 +23,8 @@ import {
 import { Textarea } from '../ui/textarea';
 import { trpc } from '@/server/client';
 import React, { useState } from 'react';
-import { useSession } from 'next-auth/react';
 import { UploadButton } from '@/lib/uploadthing';
+import { useCompanyId } from '@/hooks/useCompanyid';
 
 export default function Component({
   taskId,
@@ -57,9 +57,7 @@ export default function Component({
   selectedTaskProp?: string;
   onUpdate: () => void;
 }) {
-  const { data: session } = useSession();
-  const userId = session?.user?.id;
-  const parsedUserId = parseInt(userId as string);
+  const { companyId } = useCompanyId();
 
   const [selectedTask, setSelectedTask] = useState<string>();
   const [name, setName] = useState<string>('');
@@ -82,14 +80,14 @@ export default function Component({
 
   const addTask = trpc.boostTask.create.useMutation({
     onSuccess: () => {
-      utils.boostTask.getByCompanyId.invalidate({ companyId: parsedUserId });
+      utils.boostTask.getByCompanyId.invalidate({ companyId: companyId });
       setIsOpen(false);
       onUpdate();
     }
   });
   const updateTask = trpc.boostTask.update.useMutation({
     onSuccess: () => {
-      utils.boostTask.getByCompanyId.invalidate({ companyId: parsedUserId });
+      utils.boostTask.getByCompanyId.invalidate({ companyId: companyId });
       setIsOpen(false);
       onUpdate();
     }
@@ -99,7 +97,7 @@ export default function Component({
     if (selectedTask === 'TEXT') {
       addTask.mutate(
         {
-          companyId: parsedUserId,
+          companyId: companyId,
           textTask: {
             name: name,
             title1: title1,
@@ -132,7 +130,7 @@ export default function Component({
     if (selectedTask === 'VIDEO') {
       addTask.mutate(
         {
-          companyId: parsedUserId,
+          companyId: companyId,
           videoTask: {
             name: name,
             videoUrl: videoUrl
@@ -151,7 +149,7 @@ export default function Component({
     if (selectedTask === 'TIPS') {
       addTask.mutate(
         {
-          companyId: parsedUserId,
+          companyId: companyId,
           tipsTask: {
             name: name,
             title1: title1,

@@ -16,6 +16,7 @@ import { useSession } from 'next-auth/react';
 import { UploadButton } from '@/lib/uploadthing';
 
 import React from 'react';
+import { useCompanyId } from '@/hooks/useCompanyid';
 
 export default function Component({
   category,
@@ -36,9 +37,7 @@ export default function Component({
   dateProp?: Date;
   idProp?: number;
 }) {
-  const { data: session } = useSession();
-  const userId = session?.user?.id;
-  const parsedUserId = parseInt(userId as string);
+  const { companyId } = useCompanyId();
   const categories: { [key: number]: string } = {
     1: 'event',
     2: 'news',
@@ -106,7 +105,7 @@ export default function Component({
           imageUrl: imageUrl,
           eventUrl: eventUrl,
           categoryId: category,
-          companyId: parsedUserId
+          companyId: companyId
         },
         {
           onSuccess: () => {

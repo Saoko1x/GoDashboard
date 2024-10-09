@@ -2,19 +2,17 @@
 import { trpc } from '@/server/client';
 import ActiveCard from '../news/card';
 import DialogInfo from '../info/dialog-info';
-import { useSession } from 'next-auth/react';
 import { Button } from '../ui/button';
+import { useCompanyId } from '@/hooks/useCompanyid';
 
 export function CardEvents({ category }: { category: number }) {
-  const { data: session } = useSession();
-  const userId = session?.user?.id;
-  const parsedUserId = parseInt(userId as string);
+  const { companyId } = useCompanyId();
   const {
     data: events,
     isLoading,
     refetch
   } = trpc.info.getByCompanyId.useQuery({
-    companyId: parsedUserId
+    companyId: companyId
   });
 
   const handleUpdate = () => {

@@ -53,5 +53,24 @@ export const authRouter = router({
         data: { name }
       });
       return user;
+    }),
+  getCompanyIdByEmail: publicProcedure
+    .input(
+      z.object({
+        email: z.string().email()
+      })
+    )
+    .query(async ({ input }) => {
+      const { email } = input;
+      const company = await prisma.company.findUnique({
+        where: { email },
+        select: { id: true }
+      });
+
+      if (!company) {
+        throw new Error('Company not found');
+      }
+
+      return company.id;
     })
 });

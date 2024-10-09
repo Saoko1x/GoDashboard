@@ -1,6 +1,5 @@
 'use client';
 import { Button } from '@/components/ui/button';
-import { Plus } from 'lucide-react';
 import React, { useState } from 'react';
 import {
   Dialog,
@@ -13,7 +12,7 @@ import {
 } from '@/components/ui/dialog';
 import { trpc } from '@/server/client';
 import { Input } from '../ui/input';
-import { useSession } from 'next-auth/react';
+import { useCompanyId } from '@/hooks/useCompanyid';
 
 export default function DialogWeek({
   children,
@@ -26,16 +25,14 @@ export default function DialogWeek({
   trainingId?: number;
   onUpdate: () => void;
 }) {
-  const { data: session } = useSession();
-  const userId = session?.user?.id;
-  const parsedUserId = parseInt(userId as string);
+  const { companyId } = useCompanyId();
   const [trainingName, setTrainingName] = React.useState('');
   const [isOpen, setIsOpen] = useState(false);
 
   const addTraining = trpc.training.create.useMutation({
     onSuccess: () => {
       setIsOpen(false);
-      utils.training.getByCompanyId.invalidate({ companyId: parsedUserId });
+      utils.training.getByCompanyId.invalidate({ companyId: companyId });
       onUpdate();
     }
   });
@@ -43,7 +40,7 @@ export default function DialogWeek({
 
   const updateTraining = trpc.training.update.useMutation({
     onSuccess: () => {
-      utils.training.getByCompanyId.invalidate({ companyId: parsedUserId });
+      utils.training.getByCompanyId.invalidate({ companyId: companyId });
       setIsOpen(false);
       onUpdate();
     }
@@ -51,7 +48,7 @@ export default function DialogWeek({
 
   const handleAddTraining = () => {
     addTraining.mutate({
-      companyId: parsedUserId,
+      companyId: companyId,
       name: trainingName
     });
   };

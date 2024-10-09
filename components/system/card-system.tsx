@@ -1,5 +1,4 @@
 'use client';
-import { useSession } from 'next-auth/react';
 import {
   Card,
   CardHeader,
@@ -22,17 +21,16 @@ import {
   VideoIcon
 } from 'lucide-react';
 import DialogWeek from './dialog-system';
+import { useCompanyId } from '@/hooks/useCompanyid';
 
 export default function CardWeeks() {
-  const { data: session } = useSession();
-  const userId = session?.user?.id;
-  const parsedUserId = parseInt(userId as string);
+  const { companyId } = useCompanyId();
 
   const utils = trpc.useContext();
 
   const handleUpdate = () => {
     refetch();
-    utils.weeks.getByCompanyId.invalidate({ companyId: parsedUserId });
+    utils.weeks.getByCompanyId.invalidate({ companyId: companyId });
   };
 
   const {
@@ -40,7 +38,7 @@ export default function CardWeeks() {
     isLoading,
     refetch
   } = trpc.weeks.getByCompanyId.useQuery({
-    companyId: parsedUserId
+    companyId: companyId
   });
   const deleteWeek = trpc.weeks.delete.useMutation();
 

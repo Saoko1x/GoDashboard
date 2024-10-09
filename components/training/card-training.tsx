@@ -21,12 +21,10 @@ import {
   VideoIcon
 } from 'lucide-react';
 import DialogTraining from './dialog-training';
-import { useSession } from 'next-auth/react';
+import { useCompanyId } from '@/hooks/useCompanyid';
 
 export default function Cardtrainings() {
-  const { data: session } = useSession();
-  const userId = session?.user?.id as string;
-  const parsedUserId = parseInt(userId);
+  const { companyId } = useCompanyId();
   const utils = trpc.useContext();
 
   const {
@@ -34,12 +32,12 @@ export default function Cardtrainings() {
     isLoading,
     refetch
   } = trpc.training.getByCompanyId.useQuery({
-    companyId: parsedUserId
+    companyId: companyId
   });
   const deleteTraining = trpc.training.delete.useMutation();
 
   const handleUpdate = () => {
-    utils.training.getByCompanyId.invalidate({ companyId: parsedUserId });
+    utils.training.getByCompanyId.invalidate({ companyId: companyId });
   };
 
   const delTraining = (trainingId: number) => {
