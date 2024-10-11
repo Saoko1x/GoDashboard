@@ -73,19 +73,25 @@ export function CardEvents({ category }: { category: number }) {
 }
 
 export function CardNews({ category }: { category: number }) {
-  const utils = trpc.useContext();
+  const { companyId } = useCompanyId();
+  const {
+    data: events,
+    isLoading,
+    refetch
+  } = trpc.info.getByCompanyId.useQuery({
+    companyId: companyId
+  });
 
   const handleUpdate = () => {
-    utils.info.get.invalidate();
+    refetch();
   };
-  const { data: news, isLoading, refetch } = trpc.info.get.useQuery();
 
   if (isLoading) {
     return <div>Loading...</div>;
   }
 
   const filteredNews =
-    news?.filter((item) => item.category.id === category) || [];
+    events?.filter((event) => event.category.id === category) || [];
 
   return (
     <section className="mt-4">
@@ -134,18 +140,25 @@ export function CardNews({ category }: { category: number }) {
 }
 
 export function CardPromotions({ category }: { category: number }) {
-  const { refetch } = trpc.info.get.useQuery();
+  const { companyId } = useCompanyId();
+  const {
+    data: events,
+    isLoading,
+    refetch
+  } = trpc.info.getByCompanyId.useQuery({
+    companyId: companyId
+  });
+
   const handleUpdate = () => {
     refetch();
   };
-  const { data: promotions, isLoading } = trpc.info.get.useQuery();
 
   if (isLoading) {
     return <div>Loading...</div>;
   }
 
   const filteredPromotions =
-    promotions?.filter((item) => item.category.id === category) || [];
+    events?.filter((event) => event.category.id === category) || [];
 
   return (
     <section className="mt-4">

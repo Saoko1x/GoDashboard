@@ -36,6 +36,7 @@ import {
   TableRow
 } from '@/components/ui/table';
 import { trpc } from '@/server/client';
+import { useCompanyId } from '@/hooks/useCompanyid';
 
 export type UserProgress = {
   id: number;
@@ -171,8 +172,11 @@ export const columns: ColumnDef<UserProgress>[] = [
 ];
 
 export default function DataTableDemo() {
+  const { companyId } = useCompanyId();
+  console.log(companyId);
   const { data: users, isLoading } =
-    trpc.users.getAllUsersWithCompletedTasks.useQuery();
+    trpc.users.getAllUsersWithCompletedTasks.useQuery({ companyId });
+  console.log(users);
 
   const data: UserProgress[] = React.useMemo(() => {
     if (!users) return [];

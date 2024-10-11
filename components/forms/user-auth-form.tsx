@@ -15,9 +15,9 @@ import { useSearchParams } from 'next/navigation';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import * as z from 'zod';
-import Link from 'next/link';
 import React from 'react';
 import { trpc } from '@/server/client';
+import { toast } from '@/components/ui/use-toast';
 
 // Esquema de validación para login y signup
 const loginSchema = z.object({
@@ -60,10 +60,16 @@ export default function UserAuthForm() {
         name: data.companyName
       });
       console.log('User created:', user);
-
-      alert('User created successfully, please log in');
+      toast({
+        title: 'User created successfully, please log in',
+        description: 'User created successfully, please log in'
+      });
     } catch (error) {
       console.error('Error creating user:', error);
+      toast({
+        title: 'Failed to create user',
+        description: 'Please try again.'
+      });
       throw error;
     }
   };
@@ -74,14 +80,32 @@ export default function UserAuthForm() {
       if (isSignup) {
         await handleSignUp(data as SignupFormValue);
       } else {
-        await signIn('credentials', {
+        const result = await signIn('credentials', {
           email: data.email,
           password: data.password,
+          redirect: false,
           callbackUrl: callbackUrl ?? '/dashboard'
         });
+        if (result?.error) {
+          toast({
+            title: 'Invalid email or password',
+            description: 'Invalid email or password'
+          });
+        } else {
+          toast({
+            title: 'Logged in successfully',
+            description: 'Logged in successfully'
+          });
+          // Redirect manually after successful login
+          window.location.href = result?.url || '/dashboard';
+        }
       }
     } catch (error) {
       console.error('Error:', error);
+      toast({
+        title: 'An unexpected error occurred',
+        description: 'Please try again.'
+      });
     } finally {
       setLoading(false);
     }

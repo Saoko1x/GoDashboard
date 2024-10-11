@@ -35,9 +35,15 @@ export const usersRouter = router({
         where: { completedById: userId, status: 'completed' }
       });
     }),
-  getAllUsersWithCompletedTasks: publicProcedure.query(async () => {
-    return prisma.profile.findMany({
-      select: {
+  getAllUsersWithCompletedTasks: publicProcedure
+    .input(z.object({ companyId: z.number() }))
+    .query(async ({ input }) => {
+      const { companyId } = input;
+      return prisma.profile.findMany({
+        where: {
+          companyid: companyId
+        },
+        select: {
         id: true,
         username: true,
         first_name: true,
@@ -51,5 +57,5 @@ export const usersRouter = router({
         }
       }
     });
-  })
+  }),
 });
